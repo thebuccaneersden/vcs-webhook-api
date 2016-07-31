@@ -4,3 +4,5 @@
 Homestead.yaml
 Homestead.json
 .env
+config/deployer/deployment.digitalocean.id_rsa
+config/deployer/deployment.digitalocean.id_rsa.pub
