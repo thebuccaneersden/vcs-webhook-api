@@ -13,7 +13,8 @@
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~4.0",
         "symfony/css-selector": "2.8.*|3.0.*",
-        "symfony/dom-crawler": "2.8.*|3.0.*"
+        "symfony/dom-crawler": "2.8.*|3.0.*",
+        "sensiolabs/security-checker": "^3.0"
     },
     "autoload": {
         "classmap": [
@@ -42,7 +43,11 @@
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize"
-        ]
+        ],
+        "project:lint": "find ./app -name '*.php' -print0 | xargs -0 -n1 -P8 php -l;",
+        "project:phpunit": "php ./vendor/bin/phpunit;",
+        "project:newman": "./node_modules/newman/bin/newman --exitCode -c tests/newman/collections/test.postman_collection -e tests/newman/test.environment;",
+        "project:all-tests": "composer project:phpunit; composer project:newman;"
     },
     "config": {
         "preferred-install": "dist"
