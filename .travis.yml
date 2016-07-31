@@ -52,5 +52,6 @@ before_script:
 script:
 - phpunit -vvv
 # ?? - php -S 127.0.0.1:8888 public/index.php > /dev/null 2>&1 &
-- php artisan serve > /dev/null 2>&1 &
+#- php artisan serve > /dev/null 2>&1 &
+- ./vendor/bin/dep deploy
 # ?? - ./node_modules/newman/bin/newman --exitCode -c tests/newman/collections/test.postman_collection -e tests/newman/test.environment
