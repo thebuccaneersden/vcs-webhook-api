@@ -6,3 +6,4 @@ Homestead.json
 .env
 config/deployer/deployment.digitalocean.id_rsa
 config/deployer/deployment.digitalocean.id_rsa.pub
+config/travis-ci/secrets.tar

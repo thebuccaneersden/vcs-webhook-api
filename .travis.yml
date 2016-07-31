@@ -15,8 +15,8 @@ addons:
 #    packages:
 #    - shellchecker
 before_install:
-- openssl aes-256-cbc -K $encrypted_353ba74ad7a0_key -iv $encrypted_353ba74ad7a0_iv -in config/deployer/deployment.digitalocean.id_rsa.enc -out config/deployer/deployment.digitalocean.id_rsa -d
-- openssl aes-256-cbc -K $encrypted_353ba74ad7a0_key -iv $encrypted_353ba74ad7a0_iv -in config/deployer/deployment.digitalocean.id_rsa.pub.enc -out config/deployer/deployment.digitalocean.id_rsa.pub -d
+- openssl aes-256-cbc -K $encrypted_b5ae61882b51_key -iv $encrypted_b5ae61882b51_iv -in config/travis-ci/secrets.tar.enc -out config/travis-ci/secrets.tar -d
+- tar xvf config/travis-ci/secrets.tar -C config/deployer/
 - mysql -e "create database IF NOT EXISTS vcs_webhook_api;" -uroot
 install:
 # Install NVM so we can download and install a newer version of NodeJS
