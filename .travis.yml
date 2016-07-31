@@ -44,8 +44,6 @@ before_script:
 - cp config/dotenv/.travis.env .env
 # Check for known security vulnerabilities in our composer dependencies
 - php vendor/bin/security-checker security:check ./ -n
-# Lint our CodeDeploy Yaml file
-- ./scripts/yaml-linter appspec.yml
 # Migrate our database and seed it with test data
 - php artisan migrate --env=testing --no-interaction -vvv
 - php artisan db:seed --env=testing --no-interaction -vvv
