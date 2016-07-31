@@ -45,7 +45,7 @@ task('deploy', [
     'deploy:prepare',
     'deploy:release',
     'deploy:update_code',
-    // 'deploy:vendors',
+    'deploy:vendors',
     // 'deploy:vendors_npm',
     // 'deploy:vendors_bower',
     'deploy:symlink',
@@ -54,6 +54,9 @@ task('deploy', [
 ])->desc('Deploy your project');
 
 after('deploy', 'deploy:finish');
+
+
+
 
 function get_configuration_from( $file )
 {
