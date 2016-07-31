@@ -32,6 +32,10 @@ task( 'reload:nginx', function () {
   run('sudo service nginx reload');
 });
 
+task( 'fix:permissions', function () {
+  run('sudo chmod 0777 storage/logs/');
+});
+
 task( 'deploy:start', function() {
   writeln("<info>Deploying to</info> <fg=cyan>http://standup.api.public.phulse.com</fg=cyan>");
 });
@@ -48,6 +52,7 @@ task('deploy', [
     'deploy:vendors',
     // 'deploy:vendors_npm',
     // 'deploy:vendors_bower',
+    'fix:permissions',
     'deploy:symlink',
     'cleanup',
     'reload:nginx'
