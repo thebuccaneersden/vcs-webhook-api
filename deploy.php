@@ -2,19 +2,38 @@
 namespace Deployer;
 
 require __DIR__ . '/vendor/autoload.php';
+
 use Symfony\Component\Yaml\Yaml;
 
 date_default_timezone_set('UTC');
 
 require 'recipe/common.php';
-require 'recipe/composer.php';
+//require 'recipe/composer.php';
+require 'recipe/laravel.php';
 
-$config = get_configuration_from('config/deployer/deploy.yml');
+// Laravel recipe stuff
+{
+  // Laravel shared dirs
+  set('shared_dirs', [
+      'storage/app',
+      'storage/framework/cache',
+      'storage/framework/sessions',
+      'storage/framework/views',
+      'storage/logs',
+  ]);
 
-server( 'droplet1', $config->deploy_host, 22 )
-  ->user( $config->user )
-  ->env( 'deploy_path', $config->deploy_path )
-  ->identityFile( $config->id_rsa_pub, $config->id_rsa );
+  // Laravel writable dirs
+  set('writable_dirs', ['storage', 'vendor']);
+}
+
+serverList('config/deployer/servers.yml');
+
+#$config = get_configuration_from('config/deployer/deploy.yml');
+
+// server( 'droplet1', $config->deploy_host, 22 )
+//   ->user( $config->user )
+//   ->env( 'deploy_path', $config->deploy_path )
+//   ->identityFile( $config->id_rsa_pub, $config->id_rsa );
 
 set( 'repository', 'git@github.com:thebuccaneersden/vcs-webhook-api.git' );
 
@@ -33,7 +52,8 @@ task( 'reload:nginx', function () {
 });
 
 task( 'fix:permissions', function () {
-  run('sudo chmod 0777 storage/logs/');
+  cd( env('release_path') );
+  run('chmod 0777 storage/logs/');
 });
 
 task( 'deploy:start', function() {
