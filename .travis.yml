@@ -57,7 +57,8 @@ script:
 # ?? - ./node_modules/newman/bin/newman --exitCode -c tests/newman/collections/test.postman_collection -e tests/newman/test.environment
 deploy:
   provider: script
-  #script: ./vendor/bin/dep deploy
-  script: ls -la
+  skip_cleanup: true
+  script: ./vendor/bin/dep deploy
+  #script: ls -la
   on:
     branch: master
