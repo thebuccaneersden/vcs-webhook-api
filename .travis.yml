@@ -58,6 +58,6 @@ script:
 deploy:
   provider: script
   #script: ./vendor/bin/dep deploy
-  script: pwd
+  script: ls -la
   on:
     branch: master
