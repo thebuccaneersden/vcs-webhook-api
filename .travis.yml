@@ -38,7 +38,7 @@ install:
 - phpenv config-rm xdebug.ini
 # Install composer packages
 - composer self-update
-- composer -q update
+- composer -q install
 before_script:
 # Lint all my php files
 - find ./app -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
