@@ -58,7 +58,7 @@ script:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ./vendor/bin/dep deploy
+  script: ./vendor/bin/dep deploy production
   #script: ls -la
   on:
     branch: master
