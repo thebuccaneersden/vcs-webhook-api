@@ -7,4 +7,4 @@ production:
         password: ""
     stage:         production
     deploy_path:   "/var/www/standup.api.public.phulse.com/"
-    branch:        production
+    branch:        master
