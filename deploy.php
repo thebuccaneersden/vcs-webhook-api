@@ -53,7 +53,7 @@ task( 'reload:nginx', function () {
 
 task( 'fix:permissions', function () {
   cd( env('release_path') );
-  run('chmod 0777 storage/logs/');
+  run('chmod 0777 storage/');
 });
 
 task( 'deploy:start', function() {
