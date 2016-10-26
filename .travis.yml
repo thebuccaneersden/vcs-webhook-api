@@ -62,3 +62,5 @@ deploy:
   #script: ls -la
   on:
     branch: master
+notifications:
+  slack: foxtail-apps:ta5yJhvimIK4beuRPKVQ6eLA
