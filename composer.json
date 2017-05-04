@@ -1,22 +1,34 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
+    "name": "thebuccaneersden/drone-laravel-5_4-project-template",
+    "description": "A template for a Laravel v5.4 project that integrates with DroneCI",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
-        "laravel/framework": "5.2.*",
-        "deployer/deployer": "4.x-dev"
+        "php": ">=5.6.4",
+        "laravel/framework": "5.4.*",
+        "laravel/tinker": "~1.0",
+        "composer-packages/linters": "0.1.2",
+        "composer-packages/drone-script-library": "0.1.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~4.0",
-        "symfony/css-selector": "2.8.*|3.0.*",
-        "symfony/dom-crawler": "2.8.*|3.0.*",
+        "phpunit/phpunit": "~5.7",
+        "symfony/css-selector": "3.1.*",
+        "symfony/dom-crawler": "3.1.*",
+        "symfony/yaml": "^3.0",
         "sensiolabs/security-checker": "^3.0"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "http://pi.phulse.com:10080/composer-packages/linters.git"
+        }, {
+            "type": "vcs",
+            "url":  "http://pi.phulse.com:10080/composer-packages/drone-script-library.git"
+        }
+    ],
     "autoload": {
         "classmap": [
             "database"
@@ -26,9 +38,9 @@
         }
     },
     "autoload-dev": {
-        "classmap": [
-            "tests/TestCase.php"
-        ]
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "scripts": {
         "post-root-package-install": [
@@ -44,13 +56,11 @@
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize"
-        ],
-        "project:lint": "find ./app -name '*.php' -print0 | xargs -0 -n1 -P8 php -l;",
-        "project:phpunit": "php ./vendor/bin/phpunit;",
-        "project:newman": "./node_modules/newman/bin/newman --exitCode -c tests/newman/collections/test.postman_collection -e tests/newman/test.environment;",
-        "project:all-tests": "composer project:phpunit; composer project:newman;"
+        ]
     },
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "secure-http": false
     }
 }

@@ -1,6 +1,0 @@
-deploy_host: 'full.im.phulse.com'
-user: 'deployer'
-password:
-id_rsa: './config/deployer/deployment.digitalocean.id_rsa'
-id_rsa_pub: './config/deployer/deployment.digitalocean.id_rsa.pub'
-deploy_path: '/var/www/standup.api.public.phulse.com'

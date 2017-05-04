@@ -1,0 +1,125 @@
+platform: linux/arm
+
+pipeline:
+
+  restore-composer-cache:
+    image: foo/drone-volume-cache
+    restore: true
+    mount:
+      - /drone/.composer
+    volumes:
+      - /tmp/drone-volume-cache/composer:/cache
+
+  restore-npm-cache:
+    image: foo/drone-volume-cache
+    restore: true
+    mount:
+      - /drone/.npm
+    volumes:
+      - /tmp/drone-volume-cache/npm:/cache
+
+  clone:
+    image: armswarmdrone/git
+
+  build:
+    image: sandlayth/arm-nginx-php-fpm
+    # image: hareemca123/arm-nginx-php
+    # image: mathewpeterson/armhf-php7
+    # image: enclarify/php7-apache-armhf
+    # detach: true
+    commands:
+      ###
+      # The following 2 commands ensure that composer caches its stuff in a common
+      # area so it can be cached by the `drone-volume-cache` plugin.
+      - |
+        if [ ! -d "/drone/.composer/" ]; then
+          mv ~/.composer /drone/;
+        fi
+      - export COMPOSER_HOME=/drone/.composer
+      # ###
+      - composer -q install
+      - ./vendor/bin/php-linter ./app/
+      # Below disabled for the time being due to service error: "The web service failed for an unknown reason (HTTP 500)"
+      # - php vendor/bin/security-checker security:check ./ -n
+      - cp .env.drone .env
+      - php artisan migrate --env=testing --no-interaction -vvv
+      - php artisan db:seed --env=testing --no-interaction -vvv
+      - ./vendor/bin/phpunit  -vvv
+      - php artisan serve > /dev/null 2>&1 &
+      - ./vendor/bin/wait-for-webserver
+      - php -v
+
+  build-node:
+    image: thebuccaneersden/rpi-node
+    commands:
+      ###
+      # The following 2 commands ensure that npm caches its stuff in a common
+      # area so it can be cached by the `drone-volume-cache` plugin.
+      - |
+        if [ ! -d "/drone/.npm/" ]; then
+          mkdir /drone/.npm;
+        fi
+        if [ ! -d "/drone/.npm/cache/" ]; then
+          mkdir /drone/.npm/cache;
+        fi
+        if [ ! -d "/drone/.npm/node_modules/" ]; then
+          mkdir /drone/.npm/node_modules;
+        fi
+      - npm config set cache /drone/.npm/cache
+      - ln -s /drone/.npm/node_modules ./
+      ###
+      - npm config set loglevel warn
+      - npm install
+      # - ./node_modules/newman/bin/newman.js -v
+      # - curl localhost:8000
+      # - sleep 5000
+      # - rm -rf /drone/.npm/node_modules
+      # - mkdir /drone/.npm/node_modules
+      # - cp -R ./node_modules/* /drone/.npm/node_modules/
+      # - npm install -g node-gyp
+      # - yarn cache dir
+      # - sleep 50000
+      # - yarn install --no-progress
+
+  rebuild-composer-cache:
+    image: foo/drone-volume-cache
+    rebuild: true
+    mount:
+      - /drone/.composer
+    volumes:
+      - /tmp/drone-volume-cache/composer:/cache
+
+  rebuild-npm-cache:
+    image: foo/drone-volume-cache
+    rebuild: true
+    mount:
+      - /drone/.npm
+    volumes:
+      - /tmp/drone-volume-cache/npm:/cache
+
+  ###
+  # DEPLOYMENT STEP - fill in the details when set up
+  ###
+  # deploy:
+  #   image: tbd:latest
+
+services:
+  database:
+    image: hypriot/rpi-mysql
+    environment:
+      - MYSQL_DATABASE=testing
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+
+  # webserver:
+  #   # image: sandlayth/arm-nginx-php-fpm
+  #   # image: hareemca123/arm-nginx-php
+  #   # image: mathewpeterson/armhf-php7:fpm
+  #   image: enclarify/php7-apache-armhf
+  #   # entrypoint: [ 'php', '/drone/src/pi.phulse.com/mirrored-github-projects/drone-laravel-5_4-project-template/artisan', 'serve' ]
+  #   # entrypoint: [ 'php' ]
+  #   # command: [ '-S', '127.0.0.1:8000' ]
+  #   # entrypoint: [ 'php' ]
+  #   # command: [ '-S', '127.0.0.1:8000', '/drone/src/pi.phulse.com/mirrored-github-projects/drone-laravel-5_4-project-template/public/index.php' ]
+  #   environment:
+  #     - APACHE_CONFDIR=/var/www/
+  #   # entrypoint: [ 'php-fpm' ]
