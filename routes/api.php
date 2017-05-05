@@ -16,3 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group(['prefix' => 'webhooks', 'namespace' => 'Webhooks'], function () {
+	Route::post('/provider/{provider}', 'ProviderController@post');
+});
