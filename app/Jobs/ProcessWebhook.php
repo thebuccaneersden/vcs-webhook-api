@@ -9,13 +9,23 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Facades\App;
+
 use App\Resolvers\WebhookProcessorResolver;
 use App\Processors\Webhooks\GithubWebhookProcessor;
 use App\Processors\Webhooks\GogsWebhookProcessor;
+use App\Processors\Webhooks\BitbucketWebhookProcessor;
 
 class ProcessWebhook implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 3;
 
     protected $provider;
     protected $body;
@@ -41,18 +51,11 @@ class ProcessWebhook implements ShouldQueue
     public function handle()
     {
         Log::debug('Handling dispatched webhook from provider: ' . $this->provider);
-        Log::debug($this->body);
-        Log::debug($this->headers);
+        // Log::debug($this->body);
+        // Log::debug($this->headers);
 
-        // 
-        // Grab resolver:
-        // TODO: This needs to be dealt with slightly differently later, so we
-        // don't set our dependencies here
-        $processors = [];
-        $processors[] = new GithubWebhookProcessor();
-        $processors[] = new GogsWebhookProcessor();
+        $resolver = resolve('App\Resolvers\WebhookProcessorResolver');
 
-        $resolver = new WebhookProcessorResolver($processors);
         try {
             $processor = $resolver->resolve($this->provider);
             $result = $processor->process($this->body, $this->headers);
@@ -60,8 +63,8 @@ class ProcessWebhook implements ShouldQueue
             Log::debug($result);
         } catch(\InvalidArgumentException $iae) {
             Log::debug($iae->getMessage());
-        } catch( \Exception $e ) {
-            Log::debug($e->getMessage());
         }
     }
 }
+
+

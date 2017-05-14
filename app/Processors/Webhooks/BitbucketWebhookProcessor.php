@@ -2,18 +2,18 @@
 
 namespace App\Processors\Webhooks;
 
-class GogsWebhookProcessor extends WebhookProcessor
+class BitbucketWebhookProcessor extends WebhookProcessor
 {
     public function __construct() {}
 
     public function name()
     {
-        return "gogs";
+        return "bitbucket";
     }
 
     public function process($body, $headers)
     {
-        return "GogsWebhookProcessor";
+        return "BitbucketWebhookProcessor";
     }
 
 }

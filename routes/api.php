@@ -13,6 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
+App::bind('App\Resolvers\WebhookProcessorResolver', function() {
+	return new \App\Resolvers\WebhookProcessorResolver([
+		new \App\Processors\Webhooks\GithubWebhookProcessor(),
+		new \App\Processors\Webhooks\GogsWebhookProcessor(),
+		new \App\Processors\Webhooks\BitbucketWebhookProcessor()
+	]);
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
